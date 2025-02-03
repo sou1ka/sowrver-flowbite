@@ -49,17 +49,22 @@
                 pageObj[target].paginate.push('...');
             }
         }
-        if((max - start) <= 6) {
-            start = max - 6;
-        }
-        for(let i = (start+1); i <= max; i++) {
-            pageObj[target].paginate.push(i);
-        }
-        if(pageObj[target].pagecount > max) {
-            pageObj[target].paginate.push('...');
-        }
-        if(max < pageObj[target].pagecount) {
-            pageObj[target].paginate.push(pageObj[target].pagecount);
+        if(size > pageSize) {
+            if((max - start) <= 6) {
+                start = max - 6;
+                if(start < 1) {
+                    start = 1;
+                }
+            }
+            for(let i = (start+1); i <= max; i++) {
+                pageObj[target].paginate.push(i);
+            }
+            if(pageObj[target].pagecount > max) {
+                pageObj[target].paginate.push('...');
+            }
+            if(max < pageObj[target].pagecount) {
+                pageObj[target].paginate.push(pageObj[target].pagecount);
+            }
         }
     }
 
@@ -70,7 +75,6 @@
         if(clickpage <= 0) { return; }
         if(clickpage >= pageObj[target].size) { return; }
         if(clickpage > pageObj[target].pagecount) { return; }
-        if(clickpage == pageObj[target].page) { return; }
 
         pageObj[target].page = (clickpage == undefined ? pageObj[target].page : clickpage);
 
@@ -102,7 +106,6 @@
         if(clickpage <= 0) { return; }
         if(clickpage >= pageObj[target].size) { return; }
         if(clickpage > pageObj[target].pagecount) { return; }
-        if(clickpage == pageObj[target].page) { return; }
 
         pageObj[target].page = (clickpage == undefined ? pageObj[target].page : clickpage);
 
@@ -134,7 +137,7 @@
         if(clickpage <= 0) { return; }
         if(clickpage >= pageObj[target].size) { return; }
         if(clickpage > pageObj[target].pagecount) { return; }
-        if(clickpage == pageObj[target].page) { return; }
+
 
         pageObj[target].page = (clickpage == undefined ? pageObj[target].page : clickpage);
 
@@ -160,9 +163,9 @@
     }
 
     async function searchMusic() {
-        getMusic();
-        getAlbum();
-        getFolder();
+        getMusic(1);
+        getAlbum(1);
+        getFolder(1);
     }
 
     async function playMusic(row) {
@@ -216,7 +219,7 @@
         queue = await res.json();
     }
 
-    async function insertQueue(row) {console.log(arguments);
+    async function insertQueue(row) {
         let params = new URLSearchParams();
         params.append('path', row.path);
         params.append('name', row.name);
@@ -558,13 +561,13 @@
                 </table>
             </div>
 
-            <div class="mt-4 flex justify-end">
-                <div class="mt-1 mr-4">
+            <div class="mt-4 md:flex">
+                <div class="mt-1 mr-4 ml-1 mb-2">
                     <span class="text-sm text-gray-700 dark:text-gray-400">
                         Showing <span class="font-semibold text-gray-900 dark:text-white">{((pageObj.music.page-1) * pageSize)+1}</span> to <span class="font-semibold text-gray-900 dark:text-white">{pageObj.music.page * pageSize}</span> of <span class="font-semibold text-gray-900 dark:text-white">{pageObj.music.size}</span> Entries
                     </span>
                 </div>
-                <nav aria-label="music nagination">
+                <nav aria-label="music nagination ml-auto" style="margin-left: auto;">
                     <ul class="flex items-center -space-x-px h-8 text-sm">
                         <li>
                             <a href="javascript:void(0);" onclick="{getMusic(pageObj.music.page-1)}" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
